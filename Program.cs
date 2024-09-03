@@ -70,6 +70,8 @@ PayStatus? payStatus = PayStatus.Paid;
 var stringTextPayStatus = payStatus is null ? "all" : Enum.GetName(payStatus.Value);
 var report = Handler.ShowReport(fromDate, toDate, payStatus);
 
+
+var totalRevenue = report.TotalPrice;
 if (report is not null)
 {
     Console.WriteLine("-------------------------------------");
@@ -79,7 +81,7 @@ if (report is not null)
         Console.WriteLine("Product info: Name: {0}, Quantity: {1}, Price: {2}, TotalUnitPrice: {3}", product.BaseProduct.Name, product.Quantity, product.Price, product.TotalPrice());
     }
 
-    Console.WriteLine("TotalRevenue: {0}", report.TotalPrice);
+    Console.WriteLine("TotalRevenue: {0}", totalRevenue);
 }
 else 
 {
@@ -89,5 +91,6 @@ else
 }
 
 Console.WriteLine("Now outcome: {0}",Handler._totalOutCome);
+Console.WriteLine("Total Profit: {0}", totalRevenue - Handler._totalOutCome);
 
 Console.ReadLine();

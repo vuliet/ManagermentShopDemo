@@ -18,6 +18,10 @@ namespace ManagermentShopDemo
         public int QuantityRemain { get; set; }
 
         public decimal Price { get; set; }
+
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+
+        public DateTime? UpdatedDate { get; set; }
     }
 
     public class ProductOrder

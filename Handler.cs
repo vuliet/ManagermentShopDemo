@@ -20,9 +20,20 @@ namespace ManagermentShopDemo
             return _products;
         }
 
-        public Product UpdateProduct()
+        public static bool UpdateProduct(Product item)
         {
-            return new Product();
+            var product = _products.FirstOrDefault(x=>x.Id == item.Id);
+
+            if (product is null)
+                return false;
+
+            product.Price = item.Price;
+            product.TotalQuantity = item.TotalQuantity;
+            product.QuantityRemain = item.QuantityRemain;
+            product.Name = item.Name;
+            product.UpdatedDate = DateTime.Now;
+
+            return true;
         }
 
         public static Bill CreateBill(Bill bill) 
@@ -32,9 +43,16 @@ namespace ManagermentShopDemo
             return bill;
         }
 
-        public Bill UpdateBill(Bill bill)
+        public bool UpdateBillStatus(Guid Id, PayStatus payStatus)
         { 
-            return new Bill();
+            var bill = _bills.FirstOrDefault(x=>x.Id == Id);
+
+            if (bill is null) 
+                return false;
+
+            bill.Status = payStatus;
+            bill.UpdatedDate = DateTime.Now;
+            return true;
         }
 
         public static bool CancelBill(Guid id, string reason) 
@@ -52,8 +70,8 @@ namespace ManagermentShopDemo
         }
 
         public static Report? ShowReport(
-            DateTime? fromDate = null,
-            DateTime? toDate = null, 
+            DateTime fromDate,
+            DateTime toDate, 
             PayStatus? status = null) 
         {
             var isIgnoreBillStatus = status is null ? true : false;
@@ -86,8 +104,8 @@ namespace ManagermentShopDemo
 
             return new Report
             {
-                FromDate = fromDate.Value,
-                ToDate = toDate.Value,
+                FromDate = fromDate,
+                ToDate = toDate,
                 Products = products.ToList(),
                 TotalPrice = totalPrice
             };
