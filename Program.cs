@@ -103,11 +103,10 @@ Console.WriteLine("Now outcome: {0}",Handler.FormatCurrency(Handler._totalOutCom
 Console.WriteLine("Total Profit: {0}", Handler.FormatCurrency(totalRevenue - Handler._totalOutCome));
 
 Console.WriteLine("---------------------------");
-Console.WriteLine("List product present: ");
+Console.WriteLine("List product quantity present: ");
 foreach(var product in Handler._products)
 {
-    Console.WriteLine("Product: {0}, Price: {1}, Remain quantity: {2}", product.Name, Handler.FormatCurrency(product.Price), product.QuantityRemain);
+    Console.WriteLine("Product: {0}, Remain quantity: {1}", product.Name, product.QuantityRemain);
 }
-
 
 Console.ReadLine();
