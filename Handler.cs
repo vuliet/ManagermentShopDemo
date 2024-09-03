@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -38,12 +39,33 @@ namespace ManagermentShopDemo
 
         public static Bill CreateBill(Bill bill) 
         {
+            var products = bill.ProductItems.ToList();
+
+            var productIds = products.Select(p=>p.BaseProduct.Id).ToList();
+            var baseProduct = _products.Where(x => productIds.Contains(x.Id));
+            foreach (var product in baseProduct) 
+            {
+                var productById = products.FirstOrDefault(x=>x.BaseProduct.Id == product.Id);
+                if (productById is null)
+                    continue;
+
+                if (productById.Quantity > product.QuantityRemain)
+                {
+                    productById.Quantity = product.QuantityRemain;
+                    product.QuantityRemain = 0;
+                }
+                else
+                {
+                    product.QuantityRemain -= productById.Quantity;
+                }
+            }
+
             _bills.Add(bill);
 
             return bill;
         }
 
-        public bool UpdateBillStatus(Guid Id, PayStatus payStatus)
+        public static bool UpdateBillStatus(Guid Id, PayStatus payStatus)
         { 
             var bill = _bills.FirstOrDefault(x=>x.Id == Id);
 
@@ -74,7 +96,7 @@ namespace ManagermentShopDemo
             DateTime toDate, 
             PayStatus? status = null) 
         {
-            var isIgnoreBillStatus = status is null ? true : false;
+            var isIgnoreBillStatus = status is null;
 
             var bills = new List<Bill>();
 
@@ -109,6 +131,15 @@ namespace ManagermentShopDemo
                 Products = products.ToList(),
                 TotalPrice = totalPrice
             };
+        }
+
+        public static string FormatCurrency(decimal value)
+        {
+            CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN");   // try with "en-US"
+            if (decimal.TryParse(value.ToString(), out decimal result))
+                return result.ToString("#,###", cul.NumberFormat);
+    
+            return value.ToString();
         }
     }
 }
